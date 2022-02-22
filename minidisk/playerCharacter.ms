@@ -1,3 +1,5 @@
+import "shellriderMath"
+
 DIRECTIONS = {}
 DIRECTIONS.DOWN = 0
 DIRECTIONS.LEFT = 1
@@ -14,6 +16,8 @@ PlayerCharacter.spriteDimensions = {"w":20, "h": 28}
 
 PlayerCharacter.update = function(delta)
     inputVector = {"x": key.pressed("right") - key.pressed("left"), "y" : key.pressed("up") - key.pressed("down")}
+    inputVector = shellriderMath.normaliseVector2(inputVector)
+    pprint inputVector
     if inputVector.y != 0 then 
         if inputVector.y > 0 then 
             self.facing = DIRECTIONS.UP
