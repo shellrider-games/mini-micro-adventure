@@ -34,7 +34,7 @@ PlayerCharacter.update = function(delta)
 end function
 
 PlayerCharacter.render = function()
-    frame = self.image.getImage(self.facing * self.spriteDimensions.w,0, self.spriteDimensions.w, self.spriteDimensions.h)
+    frame = self.image.getImage(self.facing * self.spriteDimensions.w,self.image.height-self.spriteDimensions.h, self.spriteDimensions.w, self.spriteDimensions.h)
     sprite = new Sprite
     sprite.image = frame
     sprite.scale = 4
