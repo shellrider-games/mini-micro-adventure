@@ -46,6 +46,10 @@ SpriteSheetAnimationSystem.init = function(path, cols, rows)
     self.initialised = true
 end function
 
+SpriteSheetAnimationSystem.imageAt = function(col, row)
+    return self.spriteSheet.getImage(col,self.spriteSheet.height-self.frameHeight*(1+row))
+end function
+
 runUnitTests = function ()
     //test SpriteSheetAnimationSystem.init with tileset found in "/sys/pics"
     testSystem = new SpriteSheetAnimationSystem
