@@ -17,6 +17,7 @@ Animation.init = function(frames,fps = 1, currentFrame = 0)
     self.fps = fps
     self.currentFrame = currentFrame
     self.resetNextFrameTimer
+    self.initialised = true
 end function
 
 Animation.update = function(delta)
@@ -43,11 +44,22 @@ SpriteSheetAnimationSystem.init = function(path, cols, rows)
     self.frameHeight = self.spriteSheet.height / self.rows
     qa.assert self.frameHeight % 1 == 0, "Height of frames is not a whole number, check your rows parameter!"
     self.animations = {}
+    self.currentAnimation = null
     self.initialised = true
 end function
 
 SpriteSheetAnimationSystem.imageAt = function(col, row)
     return self.spriteSheet.getImage(col,self.spriteSheet.height-self.frameHeight*(1+row))
+end function
+
+SpriteSheetAnimationSystem.addAnimation = function(name, frames, fps=1, frame=0)
+    images = []
+    for location in frames
+        images.push self.imageAt(location[0],location[1])
+    end for
+    anim = new Animation
+    anim.init frames, fps, frame
+    self.animations[name] = anim
 end function
 
 runUnitTests = function ()
