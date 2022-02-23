@@ -62,6 +62,20 @@ SpriteSheetAnimationSystem.addAnimation = function(name, frames, fps=1, frame=0)
     self.animations[name] = anim
 end function
 
+SpriteSheetAnimationSystem.switchAnimation = function(name, frame=0)
+    self.currentAnimation = name
+    self.animations[name].currentFrame = frame
+    self.animations[name].resetNextFrameTimer
+end function
+
+SpriteSheetAnimationSystem.update = function(delta)
+    if self.currentAnimation != null then self.animations[currentAnimation].update delta
+end function
+
+SpriteSheetAnimationSystem.getFrame = function
+    if self.currentAnimation != null then return self.animations[currentAnimation].getFrame
+end function
+
 runUnitTests = function ()
     //test SpriteSheetAnimationSystem.init with tileset found in "/sys/pics"
     testSystem = new SpriteSheetAnimationSystem
