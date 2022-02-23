@@ -27,6 +27,10 @@ Animation.update = function(delta)
     end if
 end function
 
+Animation.getFrame = function ()
+    return self.frames[self.currentFrame]
+end function
+
 SpriteSheetAnimationSystem = {}
 SpriteSheetAnimationSystem.initialised = false
 
