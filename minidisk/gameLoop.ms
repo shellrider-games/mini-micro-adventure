@@ -1,5 +1,7 @@
 import "playerCharacter"
 
+
+
 lastTimestamp = time
 actors = []
 
@@ -36,9 +38,13 @@ startLoop = function()
 end function
 
 init = function()
+	display(5).mode = 0
+	display(7).color = color.navy
+
 	player = new playerCharacter.PlayerCharacter
 	player.position.x = 250
 	player.position.y = 250
+	player.init
 	actors.push player
 end function
 

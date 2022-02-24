@@ -28,7 +28,7 @@ Animation.update = function(delta)
     end if
 end function
 
-Animation.getFrame = function ()
+Animation.getFrame = function()
     return self.frames[self.currentFrame]
 end function
 
@@ -49,7 +49,7 @@ SpriteSheetAnimationSystem.init = function(path, cols, rows)
 end function
 
 SpriteSheetAnimationSystem.imageAt = function(col, row)
-    return self.spriteSheet.getImage(col,self.spriteSheet.height-self.frameHeight*(1+row))
+    return self.spriteSheet.getImage(col*self.frameWidth,self.spriteSheet.height-self.frameHeight*(1+row),self.frameWidth, self.frameHeight)
 end function
 
 SpriteSheetAnimationSystem.addAnimation = function(name, frames, fps=1, frame=0)
@@ -58,22 +58,27 @@ SpriteSheetAnimationSystem.addAnimation = function(name, frames, fps=1, frame=0)
         images.push self.imageAt(location[0],location[1])
     end for
     anim = new Animation
-    anim.init frames, fps, frame
+    anim.init images, fps, frame
     self.animations[name] = anim
 end function
 
 SpriteSheetAnimationSystem.switchAnimation = function(name, frame=0)
-    self.currentAnimation = name
-    self.animations[name].currentFrame = frame
-    self.animations[name].resetNextFrameTimer
+    if not self.currentAnimation == name then
+        self.currentAnimation = name
+        self.animations[name].currentFrame = frame
+        self.animations[name].resetNextFrameTimer
+    end if
 end function
 
 SpriteSheetAnimationSystem.update = function(delta)
-    if self.currentAnimation != null then self.animations[currentAnimation].update delta
+    if self.currentAnimation != null then self.animations[self.currentAnimation].update delta
 end function
 
-SpriteSheetAnimationSystem.getFrame = function
-    if self.currentAnimation != null then return self.animations[currentAnimation].getFrame
+SpriteSheetAnimationSystem.getFrame = function()
+    if self.currentAnimation != null then 
+        frame = self.animations[self.currentAnimation].getFrame()
+    end if
+    return frame
 end function
 
 runUnitTests = function ()

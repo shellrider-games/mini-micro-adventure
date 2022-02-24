@@ -1,10 +1,13 @@
 import "shellriderMath"
+import "spriteSheetAnimationSystem"
 
 DIRECTIONS = {}
 DIRECTIONS.DOWN = 0
 DIRECTIONS.LEFT = 1
 DIRECTIONS.UP = 2
 DIRECTIONS.RIGHT = 3
+
+DIRECTIONS.textList = ["down", "left", "up", "right"]
 
 PlayerCharacter = {}
 PlayerCharacter.facing = DIRECTIONS.DOWN
@@ -14,10 +17,25 @@ PlayerCharacter.speed = 150
 PlayerCharacter.image = file.loadImage("assets/img/dwarf.png")
 PlayerCharacter.spriteDimensions = {"w":20, "h": 28}
 
+
+PlayerCharacter.init = function()
+    self.animationSystem = new spriteSheetAnimationSystem.SpriteSheetAnimationSystem
+    self.animationSystem.init "assets/img/dwarf.png",8,2
+    self.animationSystem.addAnimation "idle_down", [[0,0]]
+    self.animationSystem.addAnimation "idle_left", [[1,0]]
+    self.animationSystem.addAnimation "idle_up", [[2,0]]
+    self.animationSystem.addAnimation "idle_right",[[3,0]]
+    self.animationSystem.addAnimation "walk_down", [[4,0],[4,1]], 4
+    self.animationSystem.addAnimation "walk_left", [[5,0],[5,1]], 4
+    self.animationSystem.addAnimation "walk_up", [[6,0],[6,1]], 4
+    self.animationSystem.addAnimation "walk_right", [[7,0],[7,1]], 4
+    self.animationSystem.switchAnimation "idle_down"
+end function
+
+
 PlayerCharacter.update = function(delta)
     inputVector = {"x": key.pressed("right") - key.pressed("left"), "y" : key.pressed("up") - key.pressed("down")}
     inputVector = shellriderMath.normaliseVector2(inputVector)
-    pprint inputVector
     if inputVector.y != 0 then 
         if inputVector.y > 0 then 
             self.facing = DIRECTIONS.UP
@@ -33,12 +51,23 @@ PlayerCharacter.update = function(delta)
             end if
         end if
     end if
+    animationString = ""
+    if inputVector.x == 0 and inputVector.y == 0 then
+        animationString = "idle_"
+    else
+        animationString = "walk_"
+    end if
+    animationString = animationString + DIRECTIONS.textList[self.facing]
+    self.animationSystem.switchAnimation animationString
+    self.animationSystem.update delta
+
+
     self.position.x = self.position.x + inputVector.x * self.speed * delta
     self.position.y = self.position.y + inputVector.y * self.speed * delta
 end function
 
 PlayerCharacter.render = function()
-    frame = self.image.getImage(self.facing * self.spriteDimensions.w,self.image.height-self.spriteDimensions.h, self.spriteDimensions.w, self.spriteDimensions.h)
+    frame = self.animationSystem.getFrame()
     sprite = new Sprite
     sprite.image = frame
     sprite.scale = 4
