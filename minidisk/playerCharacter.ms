@@ -16,7 +16,28 @@ PlayerCharacter.speed = 150
 
 PlayerCharacter.image = file.loadImage("assets/img/dwarf.png")
 PlayerCharacter.spriteDimensions = {"w":20, "h": 28}
+PlayerCharacter.bounds = new Bounds
+PlayerCharacter.bounds.x = PlayerCharacter.position.x
+PlayerCharacter.bounds.y = PlayerCharacter.position.y - 8*4
+PlayerCharacter.bounds.width = 15*4
+PlayerCharacter.bounds.height = 12*4
 
+PlayerCharacter.move = function(x, y)
+    self.position.x = self.position.x + x
+    self.position.y = self.position.y + y
+    self.bounds.x = self.bounds.x + x
+    self.bounds.y = self.bounds.y + y
+end function
+
+PlayerCharacter.collideWithLevel = function()
+    retArray = [false, false, false, false]
+    for i in range(0, self.bounds.corners.len-1)
+        tileX = floor(self.bounds.corners[i][0]/display(6).cellSize)
+        tileY = floor(self.bounds.corners[i][1]/display(6).cellSize)
+        if display(6).cell(tileX, tileY) != 0 then retArray[i] = true
+    end for
+    return retArray
+end function
 
 PlayerCharacter.init = function()
     self.animationSystem = new spriteSheetAnimationSystem.SpriteSheetAnimationSystem
@@ -31,7 +52,6 @@ PlayerCharacter.init = function()
     self.animationSystem.addAnimation "walk_right", [[7,0],[7,1]], 4
     self.animationSystem.switchAnimation "idle_down"
 end function
-
 
 PlayerCharacter.update = function(delta)
     inputVector = {"x": key.pressed("right") - key.pressed("left"), "y" : key.pressed("up") - key.pressed("down")}
@@ -64,16 +84,42 @@ PlayerCharacter.update = function(delta)
     moveX = inputVector.x * self.speed * delta
     moveY = inputVector.y * self.speed * delta
 
-    self.position.x = self.position.x + moveX
-    self.position.y = self.position.y + moveY
+    self.move moveX, moveY
 
+    collisions = self.collideWithLevel
+
+    collisionInfo = {}
+    collisionInfo.left = collisions[0] and collisions[1]
+    collisionInfo.top = collisions[1] and collisions[2]
+    collisionInfo.right = collisions[2] and collisions[3]
+    collisionInfo.bottom = collisions[3] and collisions[0]
+    collisionInfo.bottomLeft = collisions[0] and not collisions[1] and not collisions[3]
+    collisionInfo.topLeft = collisions[1] and not collisions[2] and not collisions[0]
+    collisionInfo.topRight = collisions[2] and not collisions[3] and not collisions[1]
+    collisionInfo.bottomRight = collisions[3] and not collisions[0] and not collisions[2]
+
+    if collisionInfo.bottomLeft or collisionInfo.topLeft or collisionInfo.topRight or collisionInfo.bottomRight then
+        self.move -moveX,-moveY
+        moveX = 0
+        moveY = 0
+    end if
+
+    if collisionInfo.left or collisionInfo.right then
+        self.move -moveX,0
+        moveX = 0
+    end if
+    if collisionInfo.top or collisionInfo.bottom then
+        self.move 0,-moveY
+        moveY = 0
+    end if
+
+
+
+    //move camera
     display(6).scrollX = display(6).scrollX + moveX
     display(6).scrollY = display(6).scrollY + moveY
-
     display(4).scrollX = display(4).scrollX + moveX
     display(4).scrollY = display(4).scrollY + moveY
-
-
 end function
 
 PlayerCharacter.render = function()

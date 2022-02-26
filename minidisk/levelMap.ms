@@ -7,6 +7,8 @@ loadLevel = function(path)
     display(6).tileSetTileSize = data["tilesets"][0]["tilewidth"]
     display(6).cellSize = data["tilewidth"]*4
     display(6).extent = [data["width"],data["height"]]
+    display(6).scrollX = 0
+    display(6).scrollY = 0
     for i in range(0, data["layers"][0]["data"].len-1)
         display(6).setCell(i % data["width"], data["height"]-floor(i/data["width"])-1,data["layers"][0]["data"][i]-1)
     end for

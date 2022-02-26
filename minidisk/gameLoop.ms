@@ -37,6 +37,8 @@ startLoop = function()
 	while not key.pressed("q")
 		waitForFrame @gameLoop
 	end while
+	display(6).clear
+	display(4).clear
 	clear
 end function
 
@@ -48,8 +50,7 @@ init = function()
 	levelMap.loadLevel "assets/testLevel.tmj"
 
 	player = new playerCharacter.PlayerCharacter
-	player.position.x = 490
-	player.position.y = 320
+	player.move 490, 320
 	player.init
 	actors.push player
 end function
