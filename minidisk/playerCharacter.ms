@@ -61,9 +61,19 @@ PlayerCharacter.update = function(delta)
     self.animationSystem.switchAnimation animationString
     self.animationSystem.update delta
 
+    moveX = inputVector.x * self.speed * delta
+    moveY = inputVector.y * self.speed * delta
 
-    self.position.x = self.position.x + inputVector.x * self.speed * delta
-    self.position.y = self.position.y + inputVector.y * self.speed * delta
+    self.position.x = self.position.x + moveX
+    self.position.y = self.position.y + moveY
+
+    display(6).scrollX = display(6).scrollX + moveX
+    display(6).scrollY = display(6).scrollY + moveY
+
+    display(4).scrollX = display(4).scrollX + moveX
+    display(4).scrollY = display(4).scrollY + moveY
+
+
 end function
 
 PlayerCharacter.render = function()

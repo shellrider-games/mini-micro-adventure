@@ -1,5 +1,5 @@
 import "playerCharacter"
-
+import "levelMap"
 
 
 lastTimestamp = time
@@ -12,7 +12,10 @@ update = function(delta)
 end function
 
 render = function
-	display(4).clear
+	storeScroll = {"x": display(4).scrollX, "y": display(4).scrollY}
+	display(4).clear	
+	display(4).scrollX = storeScroll.x
+	display(4).scrollY = storeScroll.y
 	for actor in globals.actors
 		actor.render
 	end for
@@ -38,12 +41,15 @@ startLoop = function()
 end function
 
 init = function()
-	display(5).mode = 0
-	display(7).color = color.navy
+	display(5).mode = displayMode.off
+	display(6).mode = displayMode.tile
+	display(7).color = color.black
+
+	levelMap.loadLevel "assets/testLevel.tmj"
 
 	player = new playerCharacter.PlayerCharacter
-	player.position.x = 250
-	player.position.y = 250
+	player.position.x = 490
+	player.position.y = 320
 	player.init
 	actors.push player
 end function
