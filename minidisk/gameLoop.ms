@@ -48,11 +48,6 @@ init = function()
 	display(7).color = color.black
 
 	levelMap.loadLevel "assets/testLevel.tmj"
-
-	player = new playerCharacter.PlayerCharacter
-	player.move 490, 320
-	player.init
-	actors.push player
 end function
 
 clear

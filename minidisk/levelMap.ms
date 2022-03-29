@@ -12,6 +12,25 @@ loadLevel = function(path)
     for i in range(0, data["layers"][0]["data"].len-1)
         display(6).setCell(i % data["width"], data["height"]-floor(i/data["width"])-1,data["layers"][0]["data"][i]-1)
     end for
+
+    playerSpawn = [0,0]
+
+	player = new playerCharacter.PlayerCharacter
+
+    for obj in data["layers"][1]["objects"]
+        if obj["name"] == "playerSpawn" then 
+            playerSpawn[0] = obj["x"]*4
+            playerSpawn[1] = data["height"]*data["tilewidth"]*4-obj["y"]*4
+        end if
+    end for
+    
+    pprint playerSpawn
+
+    player.move playerSpawn[0],playerSpawn[1]
+	player.init
+
+	globals.actors.push player
+
 end function
 
 runUnitTests = function ()
